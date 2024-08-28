@@ -116,7 +116,7 @@ class Sawhatsappchat extends Module
         return [
             'form' => [
                 'legend' => [
-                'title' =>  $this->l('SA Whatsapp Chat') . '-' . $this->l('Settings'),
+                'title' =>  $this->l('SA Whatsapp Chat - Settings'),
                 'icon' => 'icon-cogs',
                 ],
                 'input' => [
