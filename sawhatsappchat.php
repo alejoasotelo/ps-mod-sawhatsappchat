@@ -192,12 +192,11 @@ class Sawhatsappchat extends Module
 
     public function hookDisplayHeader()
     {
-        // path in module views/img/whastapp-48x48.jpg
-        $whasappLogo = $this->_path . 'views/img/whastapp-48x48.jpg';
+        $whasappLogo = $this->_path . 'views/img/whastapp-48x48.png';
 
         // if user request support webp format use it
         if (strpos($_SERVER['HTTP_ACCEPT'], 'image/webp') !== false) {
-            $whasappLogo = $this->_path . 'views/img/whastapp-48x48.webp';
+            $whasappLogo = $this->_path . 'views/img/whatsapp-48x48.webp';
         }
 
         Media::addJsDef([
