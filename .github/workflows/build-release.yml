@@ -42,7 +42,11 @@ jobs:
       - name: Prepare for Release
         run: |
           cd ${{ github.event.repository.name }}
-          zip -r ${{ github.event.repository.name }}.zip ${{ github.event.repository.name }}
+          repo_name="${{ github.event.repository.name }}"
+          new_name="${repo_name#ps-mod-}"
+          mv $repo_name $new_name
+          zip -r ${{ github.event.repository.name }}.zip $new_name
+          mv $new_name $repo_name
       - name: Clean existing assets
         shell: bash
         run: |
