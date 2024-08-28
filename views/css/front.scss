@@ -18,8 +18,11 @@
     right: 20px;
     z-index: 1000;
     img {
-        width: 60px;
-        height: 60px;
+        $width: 60px;
+        width: $width;
+        height: $width;
+        border-radius: $width;
+        box-shadow: -2px 4px 8px #ccc;
         cursor: pointer;
     }
 }
