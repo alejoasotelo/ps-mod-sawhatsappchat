@@ -1,0 +1,31 @@
+{
+    "name": "alejoasotelo/sawhatsappchat",
+    "description": "Module to add a WhatsApp chat to your PrestaShop store",
+    "author": "Alejo Sotelo",
+    "email": "soporte@alejosotelo.com.ar",
+    "homepage": "https://alejosotelo.com.ar",
+    "require": {
+        "php": ">=5.6"
+    },
+    "require-dev": {
+        "prestashop/php-dev-tools": "3.*",
+        "prestashop/autoindex": "^1.0",
+        "prestashop/header-stamp": "^1.7",
+        "friendsofphp/php-cs-fixer": "^2.19"
+    },
+    "config": {
+        "preferred-install": "dist",
+        "optimize-autoloader": true,
+        "prepend-autoloader": false,
+        "platform": {
+            "php": "5.6"
+        }
+    },
+    "scripts": {
+        "php-cs-fixer": "vendor/bin/php-cs-fixer fix",
+        "header-stamp": "vendor/bin/header-stamp --exclude=vendor --extensions=php,js,css,scss,tpl,html,twig --license=./commerciallicense.txt --display-report",
+        "phpstan176": "tests/phpstan.sh 1.7.6"
+    },
+    "type": "prestashop-module",
+    "license": "Commercial License"
+}
