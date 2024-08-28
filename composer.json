@@ -24,6 +24,7 @@
     "scripts": {
         "php-cs-fixer": "vendor/bin/php-cs-fixer fix",
         "header-stamp": "vendor/bin/header-stamp --exclude=vendor --extensions=php,js,css,scss,tpl,html,twig --license=./commerciallicense.txt --display-report",
+        "autoindex": "vendor/bin/autoindex",
         "phpstan176": "tests/phpstan.sh 1.7.6"
     },
     "type": "prestashop-module",

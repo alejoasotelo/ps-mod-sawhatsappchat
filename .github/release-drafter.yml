@@ -1,0 +1,14 @@
+branches:
+    - master
+    - main
+name-template: $NEXT_PATCH_VERSION
+tag-template: $NEXT_PATCH_VERSION
+categories:
+    - title: 🚀 Mejoras
+      label: enhancement
+    - title: 🐛 Correciones de errores
+      label: bug
+change-template: '- #$NUMBER: $TITLE by @$AUTHOR'
+template: |
+    # Cambios
+    $CHANGES
