@@ -1,0 +1,7 @@
+includes:
+	- %currentWorkingDirectory%/tests/phpstan/phpstan.neon
+
+parameters:
+	ignoreErrors:
+		- '#Cannot cast Tax to float.#'
+		- '#Call to an undefined static method ImageType::getFormattedName\(\).#'

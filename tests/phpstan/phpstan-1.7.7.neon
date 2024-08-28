@@ -1,0 +1,6 @@
+includes:
+	- %currentWorkingDirectory%/tests/phpstan/phpstan.neon
+
+parameters:
+	ignoreErrors:
+		- '#Constant _PS_BASE_URL_SSL_ not found\.#'

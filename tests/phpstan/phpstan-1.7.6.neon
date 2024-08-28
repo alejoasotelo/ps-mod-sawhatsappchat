@@ -1,0 +1,7 @@
+includes:
+    - %currentWorkingDirectory%/tests/phpstan/phpstan.neon
+
+parameters:
+	ignoreErrors:
+		- '#Parameter \#1 \$id of class Customer constructor expects null, int given\.#'
+		- '#Constant _PS_BASE_URL_SSL_ not found\.#'
