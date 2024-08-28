@@ -25,7 +25,7 @@ class Sawhatsappchat extends Module
     {
         $this->name = 'sawhatsappchat';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.2';
+        $this->version = '1.0.3';
         $this->author = 'Alejo Sotelo <alejosotelo.com.ar>';
         $this->need_instance = 0;
 
