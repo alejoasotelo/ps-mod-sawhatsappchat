@@ -120,25 +120,6 @@ class Sawhatsappchat extends Module
                 'icon' => 'icon-cogs',
                 ],
                 'input' => [
-                    // array(
-                    //     'type' => 'switch',
-                    //     'label' => $this->l('Live mode'),
-                    //     'name' => 'SAWHATSAPPCHAT_LIVE_MODE',
-                    //     'is_bool' => true,
-                    //     'desc' => $this->l('Use this module in live mode'),
-                    //     'values' => array(
-                    //         array(
-                    //             'id' => 'active_on',
-                    //             'value' => true,
-                    //             'label' => $this->l('Enabled')
-                    //         ),
-                    //         array(
-                    //             'id' => 'active_off',
-                    //             'value' => false,
-                    //             'label' => $this->l('Disabled')
-                    //         )
-                    //     ),
-                    // ),
                     [
                         'col' => 3,
                         'type' => 'text',
