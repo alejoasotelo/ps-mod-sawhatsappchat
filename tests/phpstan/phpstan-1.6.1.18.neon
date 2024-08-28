@@ -3,5 +3,4 @@ includes:
 
 parameters:
 	ignoreErrors:
-		- '#Cannot cast Tax to float.#'
-		- '#Call to an undefined static method ImageType::getFormattedName\(\).#'
+		# - '#Cannot cast Tax to float.#'

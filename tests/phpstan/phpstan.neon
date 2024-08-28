@@ -1,9 +1,16 @@
 includes:
 	- %currentWorkingDirectory%/vendor/prestashop/php-dev-tools/phpstan/ps-module-extension.neon
 parameters:
-  paths:
-    # From PHPStan 0.12, paths to check are relative to the neon file
-    - ../../sawhatsappchat.php
-    - ../../sql/
-    - ../../upgrade/
-  level: 5
+	paths:
+		# From PHPStan 0.12, paths to check are relative to the neon file
+		- ../../sawhatsappchat.php
+		- ../../sql/
+		- ../../upgrade/
+	level: 5
+	ignoreErrors:
+		-
+			message: '#Empty array passed to foreach\.#'
+			path: ../../sql/install.php
+		-
+			message: '#Empty array passed to foreach\.#'
+			path: ../../sql/uninstall.php

@@ -3,4 +3,4 @@ includes:
 
 parameters:
 	ignoreErrors:
-		- '#Cannot cast Tax to float.#'
+		# - '#Cannot cast Tax to float.#'

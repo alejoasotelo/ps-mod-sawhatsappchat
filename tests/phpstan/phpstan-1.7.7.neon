@@ -3,4 +3,4 @@ includes:
 
 parameters:
 	ignoreErrors:
-		- '#Constant _PS_BASE_URL_SSL_ not found\.#'
+		# - '#Cannot cast Tax to float.#'
