@@ -1,0 +1,11 @@
+#sawhatsapp-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+#sawhatsapp-button img {
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+}/*# sourceMappingURL=front.css.map */
