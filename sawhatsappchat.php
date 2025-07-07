@@ -13,6 +13,8 @@
  * @copyright Copyright (c) since 2007 Alejo Sotelo
  * @license   Commercial License
  */
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -25,7 +27,7 @@ class Sawhatsappchat extends Module
     {
         $this->name = 'sawhatsappchat';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.4';
+        $this->version = '1.1.0';
         $this->author = 'Alejo Sotelo <alejosotelo.com.ar>';
         $this->need_instance = 0;
 
@@ -48,8 +50,14 @@ class Sawhatsappchat extends Module
      */
     public function install()
     {
+        $msgLogged = 'Hola {asesor_nombre}! Soy {cliente_nombre}. Te contacto desde {url}. Quería hacer una consulta:';
+        $msgGuest = 'Hola {asesor_nombre}! Te contacto desde {url}. Quería hacer una consulta:';
+
         Configuration::updateValue('SAWHATSAPPCHAT_PHONE', '');
-        Configuration::updateValue('SAWHATSAPPCHAT_MESSAGE', '');
+        Configuration::updateValue('SAWHATSAPPCHAT_MESSAGE_GUEST', 'Hola, estoy en {url}');
+        Configuration::updateValue('SAWHATSAPPCHAT_MESSAGE_LOGGED', 'Hola! Soy {cliente_nombre} estoy en {url}');
+        Configuration::updateValue('SAWHATSAPPCHAT_MESSAGE_ASESOR_GUEST', $msgGuest);
+        Configuration::updateValue('SAWHATSAPPCHAT_MESSAGE_ASESOR_LOGGED', $msgLogged);
 
         return parent::install() &&
             $this->registerHook('displayHeader');
@@ -58,7 +66,10 @@ class Sawhatsappchat extends Module
     public function uninstall()
     {
         Configuration::deleteByName('SAWHATSAPPCHAT_PHONE');
-        Configuration::deleteByName('SAWHATSAPPCHAT_MESSAGE');
+        Configuration::deleteByName('SAWHATSAPPCHAT_MESSAGE_GUEST');
+        Configuration::deleteByName('SAWHATSAPPCHAT_MESSAGE_LOGGED');
+        Configuration::deleteByName('SAWHATSAPPCHAT_MESSAGE_ASESOR_LOGGED');
+        Configuration::deleteByName('SAWHATSAPPCHAT_MESSAGE_ASESOR_GUEST');
 
         return parent::uninstall();
     }
@@ -131,12 +142,37 @@ class Sawhatsappchat extends Module
                     ],
                     [
                         'col' => 3,
-                        'type' => 'text',
+                        'type' => 'textarea',
                         'prefix' => '<i class="icon icon-text"></i>',
-                        'desc' => $this->l('Enter a message. Use %s to replace the current page url'),
-                        'name' => 'SAWHATSAPPCHAT_MESSAGE',
-                        'label' => $this->l('Whatsapp Message'),
-                        'placeholder' => 'Hola, estoy en %s',
+                        'desc' => $this->l('Mensaje que se enviará al dueño del sitio cuando el cliente sea invitado. Variables: {asesor_nombre}, {asesor_email}, {asesor_telefono}, {cliente_nombre}, {dominio} y {url}.'),
+                        'name' => 'SAWHATSAPPCHAT_MESSAGE_GUEST',
+                        'label' => $this->l('Whatsapp Message (Guest)'),
+                        'placeholder' => 'Hola, estoy en {url}',
+                    ],
+                    [
+                        'col' => 3,
+                        'type' => 'textarea',
+                        'prefix' => '<i class="icon icon-text"></i>',
+                        'desc' => $this->l('Mensaje que se enviará al dueño del sitio cuando el cliente esté logueado. Variables: {asesor_nombre}, {asesor_email}, {asesor_telefono}, {cliente_nombre}, {dominio} y {url}.'),
+                        'name' => 'SAWHATSAPPCHAT_MESSAGE_LOGGED',
+                        'label' => $this->l('Whatsapp Message (Logged In)'),
+                        'placeholder' => 'Hola, estoy en {url}',
+                    ],
+                    [
+                        'col' => 3,
+                        'type' => 'textarea',
+                        'prefix' => '<i class="icon icon-envelope"></i>',
+                        'desc' => $this->l('Mensaje que se enviara por whatsapp al asesor comercial cuando el cliente esté logueado. Variables: {asesor_nombre}, {asesor_email}, {asesor_telefono}, {cliente_nombre}, {dominio} y {url}.'),
+                        'name' => 'SAWHATSAPPCHAT_MESSAGE_ASESOR_LOGGED',
+                        'label' => $this->l('Mensaje whatsapp Asesor (Cliente Logueado)'),
+                    ],
+                    [
+                        'col' => 3,
+                        'type' => 'textarea',
+                        'prefix' => '<i class="icon icon-envelope"></i>',
+                        'desc' => $this->l('Mensaje que se enviara por whatsapp al asesor comercial cuando el cliente sea invitado.  Variables: {asesor_nombre}, {asesor_email}, {asesor_telefono}, {cliente_nombre}, {dominio} y {url}.'),
+                        'name' => 'SAWHATSAPPCHAT_MESSAGE_ASESOR_GUEST',
+                        'label' => $this->l('Mensaje whatsapp Asesor (Cliente Invitado)'),
                     ],
                 ],
                 'submit' => [
@@ -153,7 +189,10 @@ class Sawhatsappchat extends Module
     {
         return [
             'SAWHATSAPPCHAT_PHONE' => Configuration::get('SAWHATSAPPCHAT_PHONE', null, null, null, ''),
-            'SAWHATSAPPCHAT_MESSAGE' => Configuration::get('SAWHATSAPPCHAT_MESSAGE', null, null, null, ''),
+            'SAWHATSAPPCHAT_MESSAGE_GUEST' => Configuration::get('SAWHATSAPPCHAT_MESSAGE_GUEST', null, null, null, ''),
+            'SAWHATSAPPCHAT_MESSAGE_LOGGED' => Configuration::get('SAWHATSAPPCHAT_MESSAGE_LOGGED', null, null, null, ''),
+            'SAWHATSAPPCHAT_MESSAGE_ASESOR_LOGGED' => Configuration::get('SAWHATSAPPCHAT_MESSAGE_ASESOR_LOGGED', null, null, null, ''),
+            'SAWHATSAPPCHAT_MESSAGE_ASESOR_GUEST' => Configuration::get('SAWHATSAPPCHAT_MESSAGE_ASESOR_GUEST', null, null, null, ''),
         ];
     }
 
@@ -171,6 +210,10 @@ class Sawhatsappchat extends Module
 
     public function hookDisplayHeader()
     {
+        if (!$this->active) {
+            return;
+        }
+
         $whasappLogo = $this->_path . 'views/img/whatsapp-container-48x48.png';
 
         if (strpos($_SERVER['HTTP_ACCEPT'], 'image/webp') !== false) {
@@ -180,7 +223,7 @@ class Sawhatsappchat extends Module
         Media::addJsDef([
             'sawhatsappchat' => [
                 'phone' => Configuration::get('SAWHATSAPPCHAT_PHONE'),
-                'message' => Configuration::get('SAWHATSAPPCHAT_MESSAGE'),
+                'message' => $this->getMessage(),
                 'logo' => $whasappLogo,
             ],
         ]);
@@ -204,5 +247,116 @@ class Sawhatsappchat extends Module
                 'version' => $this->version,
             ]
         );
+    }
+
+    protected function getMessage()
+    {
+        $asesor = $this->findAsesor();
+
+        if ($asesor !== false) {
+            return $this->getMessageAsesor($asesor);
+        }
+
+        return $this->getMessageDefault();
+    }
+
+    protected function findAsesor()
+    {
+        $existsCart = Validate::isLoadedObject($this->context->cart);
+        $cartId = $existsCart ? $this->context->cart->id : null;
+
+        $asesorManager = new AsesorManager($this->context);
+        $hasCode = $asesorManager->hasCodeInCookieOrCart($cartId);
+
+        if (!$hasCode) {
+            return false;
+        }
+    
+        if ($existsCart && ($link = SavoucherbylinkCart::findByCartId($cartId)) !== false) {
+            $code = $link->code;
+        } else {
+            $code = $this->asesorManager->getCodeInCookie();
+        }
+
+        $asesor = SavoucherbylinkAsesor::getInstance()->findAsesorOrCustomerByCode($code);
+        $asesor->code = $code;
+
+        if (!$asesor) {
+            return false;
+        }
+
+        return $asesor;
+    }
+
+    protected function getMessageAsesor($asesor)
+    {
+        $firstname = $this->context->customer->isLogged() ? $this->context->customer->firstname : '';
+        $configKey = 'SAWHATSAPPCHAT_MESSAGE_ASESOR_';
+        $configKey .= !empty($firstname) ? 'LOGGED' : 'GUEST';
+        $host = Tools::getHttpHost();
+
+        $message = Configuration::get($configKey, null, null, null, '');
+        $message = str_replace(
+            [
+                '{asesor_nombre}',
+                '{asesor_email}',
+                '{asesor_telefono}',
+                '{cliente_nombre}',
+                '{dominio}',
+                '{url}'
+            ],
+            [
+                $asesor->name, 
+                $asesor->email, 
+                $asesor->whatsapp,
+                !empty($firstname) ? ucwords(strtolower($firstname)) : '',
+                $host,
+                $this->getCurrentUri($asesor->code)
+            ],
+            $message
+        );
+        return $message;
+    }
+
+    protected function getMessageDefault()
+    {
+        $firstname = $this->context->customer->isLogged() ? $this->context->customer->firstname : '';
+        $configKey = 'SAWHATSAPPCHAT_MESSAGE_';
+        $configKey .= !empty($firstname) ? 'LOGGED' : 'GUEST';
+        $host = Tools::getHttpHost();
+
+        $message = Configuration::get($configKey, null, null, null, '');
+        $message = str_replace(
+            [
+                '{asesor_nombre}',
+                '{asesor_email}',
+                '{asesor_telefono}',
+                '{cliente_nombre}',
+                '{dominio}',
+                '{url}'
+            ],
+            [
+                '', 
+                '', 
+                '',
+                !empty($firstname) ? ucwords(strtolower($firstname)) : '',
+                $host,
+                $this->getCurrentUri()
+            ],
+            $message
+        );
+        return $message;
+    }
+
+    protected function getCurrentUri($code = '')
+    {
+        $currentUri = _PS_BASE_URL_SSL_;
+        $currentUri .= SymfonyRequest::createFromGlobals()->getRequestUri();
+
+        if (!empty($code)) {
+            $currentUri .= (strpos($currentUri, '?') === false ? '?' : '&') . AsesorManager::GET_PARAM_CODE . '=' . $code;
+        }
+
+        return $currentUri;
     }
 }
