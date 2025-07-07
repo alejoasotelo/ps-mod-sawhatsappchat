@@ -24,10 +24,13 @@ if (!defined('_PS_VERSION_')) {
  */
 function upgrade_module_1_1_0($module)
 {
-    /*
-     * Do everything you want right there,
-     * You could add a column in one of your module's tables
-     */
+    $msgLogged = 'Hola {asesor_nombre}! Soy {cliente_nombre}. Te contacto desde {url}. Quería hacer una consulta:';
+    $msgGuest = 'Hola {asesor_nombre}! Te contacto desde {url}. Quería hacer una consulta:';
+
+    Configuration::updateValue('SAWHATSAPPCHAT_MESSAGE_GUEST', 'Hola, estoy en {url}');
+    Configuration::updateValue('SAWHATSAPPCHAT_MESSAGE_LOGGED', 'Hola! Soy {cliente_nombre} estoy en {url}');
+    Configuration::updateValue('SAWHATSAPPCHAT_MESSAGE_ASESOR_GUEST', $msgGuest);
+    Configuration::updateValue('SAWHATSAPPCHAT_MESSAGE_ASESOR_LOGGED', $msgLogged);
 
     return true;
 }
