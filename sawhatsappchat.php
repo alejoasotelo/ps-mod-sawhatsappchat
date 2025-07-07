@@ -127,7 +127,7 @@ class Sawhatsappchat extends Module
         return [
             'form' => [
                 'legend' => [
-                    'title' =>  $this->l('SA Whatsapp Chat - Settings'),
+                    'title' => $this->l('SA Whatsapp Chat - Settings'),
                     'icon' => 'icon-cogs',
                 ],
                 'input' => [
@@ -303,18 +303,19 @@ class Sawhatsappchat extends Module
                 '{asesor_telefono}',
                 '{cliente_nombre}',
                 '{dominio}',
-                '{url}'
+                '{url}',
             ],
             [
-                $asesor->name, 
-                $asesor->email, 
+                $asesor->name,
+                $asesor->email,
                 $asesor->whatsapp,
                 !empty($firstname) ? ucwords(strtolower($firstname)) : '',
                 $host,
-                $this->getCurrentUri($asesor->code)
+                $this->getCurrentUri($asesor->code),
             ],
             $message
         );
+
         return $message;
     }
 
@@ -345,6 +346,7 @@ class Sawhatsappchat extends Module
             ],
             $message
         );
+
         return $message;
     }
 
