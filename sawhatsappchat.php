@@ -23,6 +23,8 @@ class Sawhatsappchat extends Module
 {
     protected $config_form = false;
 
+    protected $cache = [];
+
     public function __construct()
     {
         $this->name = 'sawhatsappchat';
@@ -220,9 +222,12 @@ class Sawhatsappchat extends Module
             $whasappLogo = $this->_path . 'views/img/whatsapp-container-48x48.webp';
         }
 
+        $isAsesor = $this->findAsesor() !== false;
+
         Media::addJsDef([
             'sawhatsappchat' => [
-                'phone' => Configuration::get('SAWHATSAPPCHAT_PHONE'),
+                'phone' => $this->getPhone(),
+                'isAsesor' => $isAsesor ? 1 : 0,
                 'message' => $this->getMessage(),
                 'logo' => $whasappLogo,
             ],
@@ -249,6 +254,17 @@ class Sawhatsappchat extends Module
         );
     }
 
+    protected function getPhone()
+    {
+        $asesor = $this->findAsesor();
+
+        if ($asesor !== false) {
+            return $asesor->whatsapp;
+        }
+
+        return Configuration::get('SAWHATSAPPCHAT_PHONE');
+    }
+
     protected function getMessage()
     {
         $asesor = $this->findAsesor();
@@ -262,6 +278,11 @@ class Sawhatsappchat extends Module
 
     protected function findAsesor()
     {
+        $storeId = 'findAsesor';
+        if (isset($this->cache[$storeId])) {
+            return $this->cache[$storeId];
+        }
+
         $existsCart = Validate::isLoadedObject($this->context->cart);
         $cartId = $existsCart ? $this->context->cart->id : null;
 
@@ -269,6 +290,7 @@ class Sawhatsappchat extends Module
         $hasCode = $asesorManager->hasCodeInCookieOrCart($cartId);
 
         if (!$hasCode) {
+            $this->cache[$storeId] = false;
             return false;
         }
     
@@ -279,13 +301,17 @@ class Sawhatsappchat extends Module
         }
 
         $asesor = SavoucherbylinkAsesor::getInstance()->findAsesorOrCustomerByCode($code);
-        $asesor->code = $code;
 
         if (!$asesor) {
+            $this->cache[$storeId] = false;
             return false;
         }
 
-        return $asesor;
+        $asesor->code = $code;
+
+        $this->cache[$storeId] = $asesor;
+
+        return $this->cache[$storeId];
     }
 
     protected function getMessageAsesor($asesor)
