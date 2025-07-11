@@ -297,7 +297,7 @@ class Sawhatsappchat extends Module
         if ($existsCart && ($link = SavoucherbylinkCart::findByCartId($cartId)) !== false) {
             $code = $link->code;
         } else {
-            $code = $this->asesorManager->getCodeInCookie();
+            $code = $asesorManager->getCodeInCookie();
         }
 
         $asesor = SavoucherbylinkAsesor::getInstance()->findAsesorOrCustomerByCode($code);
