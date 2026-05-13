@@ -15,8 +15,13 @@
 document.addEventListener('DOMContentLoaded', function () {
     const currentUrl = window.location.href;
     const message = encodeURIComponent(sawhatsappchat.message.replace('%s', currentUrl));
+    const phone = String(sawhatsappchat.phone || '').replace(/\D/g, '');
 
-    const whatsappLink = `https://wa.me/${sawhatsappchat.phone}?text=${message}`;
+    if (!phone) {
+        return;
+    }
+
+    const whatsappLink = `https://api.whatsapp.com/send?phone=${phone}&text=${message}`;
 
     const template = `
         <div id="sawhatsapp-button">
