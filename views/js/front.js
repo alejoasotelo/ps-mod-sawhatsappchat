@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const phone = String(sawhatsappchat.phone || '').replace(/\D/g, '');
 
     if (!phone) {
+        console.warn('SA WhatsApp Chat: missing configured phone number');
         return;
     }
 
