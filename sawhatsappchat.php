@@ -291,9 +291,10 @@ class Sawhatsappchat extends Module
 
         if (!$hasCode) {
             $this->cache[$storeId] = false;
+
             return false;
         }
-    
+
         if ($existsCart && ($link = SavoucherbylinkCart::findByCartId($cartId)) !== false) {
             $code = $link->code;
         } else {
@@ -304,6 +305,7 @@ class Sawhatsappchat extends Module
 
         if (!$asesor) {
             $this->cache[$storeId] = false;
+
             return false;
         }
 
@@ -360,15 +362,15 @@ class Sawhatsappchat extends Module
                 '{asesor_telefono}',
                 '{cliente_nombre}',
                 '{dominio}',
-                '{url}'
+                '{url}',
             ],
             [
-                '', 
-                '', 
+                '',
+                '',
                 '',
                 !empty($firstname) ? ucwords(strtolower($firstname)) : '',
                 $host,
-                $this->getCurrentUri()
+                $this->getCurrentUri(),
             ],
             $message
         );
